@@ -1,7 +1,25 @@
+1.4.0
+=====
+ - *Breaking Change* - Changed error type from String to `scodec.Err`. `Err` is a non-sealed class, allowing
+   codecs to return custom subtypes describing domain specific errors. This allows dispatching on those domain
+   specific errors. To upgrade, instead of returning a string, wrap the string with `Err(str)`. See
+   [the PR](https://github.com/scodec/scodec/pull/27) for details.
+ - Added `Codec.coproduct`, which helps create `Coproduct` based codecs.
+   See [CoproductsExample](src/test/scala/scodec/examples/CoproductsExample.scala).
+ - Added support for automatically deriving codecs, based on `Codec.product` and `Codec.coproduct`. See
+   [DerivedCodecExamples](src/test/scala/scodec/examples/DerivedCodecExamples.scala).
+ - Added `scodec.codecs.implicits`, which provides implicit codecs for primitive values and collections.
+ - Updated `paddedFixedSize{Bits,Bytes}Dependent` combinator for building PKCS5/PKCS7 style padding.
+
 1.3.2
 =====
- - Added `Codec.auto`, which automatically generates `HList` based codecs for case classes and `HList` types if all
-   component types have implicit codecs available
+ - Added `flatAppend` and `flatConcat` to `HList` based codecs.
+ - Added `Codec.product`, which automatically generates `HList` based codecs for case classes and `HList` types if all
+   component types have implicit codecs available. See [ProductsExample](src/test/scala/scodec/examples/ProductsExample.scala).
+ - Added the `toField` combinator to `Codec`, allowing creation of Shapeless field codecs from value codecs.
+   That is, `toField[K]` on `Codec` converts a `Codec[A]` to a `Codec[FieldType[K, A]]`
+ - Added `variableSize{Bits,Bytes}Long` as alternatives to `variableSize{Bits,Bytes}`, where the size is encoded/decoded
+   via a `Codec[Long]` instead of a `Codec[Int]`.
 
 1.3.1
 =====
