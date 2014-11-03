@@ -141,10 +141,6 @@ class CodecTest extends CodecSuite {
   }
 
   "automatic codec generation" should {
-    "support automatic generation of HList codecs" in {
-      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.product[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
-    }
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
       Codec.product[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits

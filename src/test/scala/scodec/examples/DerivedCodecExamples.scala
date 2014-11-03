@@ -98,7 +98,6 @@ class DerivedCodecsExample extends CodecSuite {
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
-      //implicitly[Codec.CoproductAuto[Color]]
       Codec[Color].encodeValid(Color.Green) shouldBe hex"02".bits
     }
   }

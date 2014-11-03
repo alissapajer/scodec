@@ -35,13 +35,5 @@ class ProductsExample extends CodecSuite {
 
       codec.encode(Woozle(1, 256)) shouldBe \/.left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("strength"))
     }
-
-    "demonstrate hlist generation" in {
-      // Codec.product supports direct `HList` types as well.
-      implicit val (i, b) = (uint8, bool)
-      val codec = Codec.product[Int :: Int :: Boolean :: HNil]
-
-      codec.encodeValid(1 :: 2 :: true :: HNil) shouldBe hex"0102ff".bits.dropRight(7)
-    }
   }
 }

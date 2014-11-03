@@ -326,9 +326,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     implicit def hnil: ProductAuto[HNil] =
       new ProductAuto[HNil] { val codec = codecs.HListCodec.hnilCodec }
 
-    implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: ProductAuto[T]): ProductAuto[H :: T] =
-      new ProductAuto[H :: T] { val codec = headCodec :: tailAux.codec }
-
     implicit def record[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
       headCodec: Codec[VH],
       tailAux: ProductAuto[TRec],
@@ -382,16 +379,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
         type C = CNil
         type L = HNil
         def apply = codecs.CoproductCodecBuilder(HNil)
-      }
-
-    implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
-      headCodec: Codec[H],
-      tailAux: CoproductAuto.Aux[T, T, TL]
-    ): CoproductAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
-      new CoproductAuto[H :+: T] {
-        type C = H :+: T
-        type L = Codec[H] :: TL
-        def apply = headCodec :+: tailAux.apply
       }
 
     import shapeless.ops.union.{ Keys => UnionKeys }
