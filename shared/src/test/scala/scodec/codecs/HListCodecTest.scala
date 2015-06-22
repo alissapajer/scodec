@@ -169,5 +169,21 @@ class HListCodecTest extends CodecSuite {
       val decoded = codec.compact.decode(bits).require.value
       decoded shouldBe value
     }
+
+    "support discriminated recursive codec" in {
+      sealed trait Message
+      case class Batch(msgs: List[Message]) extends Message
+      case class Single(msg: String) extends Message
+
+      lazy val codec: Codec[Message] = lazily {
+        discriminated[Message].by(uint8).
+          typecase(0, utf8.as[Single]).
+          typecase(1, list(codec).as[Batch])
+      }
+
+      val msg: Message = Batch(List(Single("first"), Single("second"), Single("third")))
+
+      roundtrip(codec, msg)
+    }
   }
 }
